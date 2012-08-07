@@ -14,8 +14,8 @@ public class ConnectionHelper
 	{
     	String driver = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			url = "jdbc:mysql://localhost/directory?user=root";
+			Class.forName("org.h2.Driver");
+			url = "jdbc:h2:mem:";
             ResourceBundle bundle = ResourceBundle.getBundle("cellar");
             driver = bundle.getString("jdbc.driver");
             Class.forName(driver);
