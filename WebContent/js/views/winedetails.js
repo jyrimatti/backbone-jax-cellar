@@ -4,12 +4,6 @@ window.WineView = Backbone.View.extend({
 
     initialize: function() {
         this.template = _.template(tpl.get('wine-details'));
-		this.model.bind("change", this.render, this);
-    },
-
-    render: function(eventName) {
-		$(this.el).html(this.template(this.model.toJSON()));
-		return this;
     },
 
     events: {
@@ -38,7 +32,7 @@ window.WineView = Backbone.View.extend({
 		});
 		if (this.model.isNew()) {
 			var self = this;
-			app.wineList.create(this.model, {
+			wineList.create(this.model, {
 				success: function() {
 					app.navigate('wines/'+self.model.id, false);
 				}

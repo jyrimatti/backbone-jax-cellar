@@ -1,3 +1,21 @@
+
+Backbone.View.prototype.setModel = function(m) {
+	if (this.model) {
+		this.model.unbind("change", this.render, this);
+	}
+	this.model = m;
+	this.model.bind("change", this.render, this);
+	this.render();
+};
+
+Backbone.View.prototype.render = function(eventName) {
+	if (this.model) {
+		$(this.el).html(this.template(this.model.toJSON()));
+	}
+	return this;
+};
+
+
 Backbone.View.prototype.close = function () {
     console.log('Closing view ' + this);
     if (this.beforeClose) {
@@ -7,10 +25,24 @@ Backbone.View.prototype.close = function () {
     this.unbind();
 };
 
-var AppRouter = Backbone.Router.extend({
+var headerView;
+var wineView;
+var wineListView;
 
+var wineList = new WineCollection();
+
+var AppRouter = Backbone.Router.extend({
+	
     initialize: function() {
-        $('#header').html( new HeaderView().render().el );
+    	wineList.fetch({async: false});
+    	
+    	headerView = new HeaderView();
+    	wineView = new WineView();
+    	wineListView = new WineListView({model: wineList});
+    	
+    	$('#sidebar').html(wineListView.render().el);
+        $('#header').html(headerView.render().el);
+        $('#content').html(wineView.render().el);
     },
 
 	routes: {
@@ -20,41 +52,15 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	list: function() {
-        this.before();
   	},
 
 	wineDetails: function(id) {
-        this.before(function() {
-			var wine = app.wineList.get(id);
-		    app.showView( '#content', new WineView({model: wine}) );
-        });
+		wineView.setModel(wineList.get(id));
   	},
 
 	newWine: function() {
-        this.before(function() {
-    		app.showView( '#content', new WineView({model: new Wine()}) );
-        });
-	},
-
-    showView: function(selector, view) {
-        if (this.currentView)
-            this.currentView.close();
-        $(selector).html(view.render().el);
-        this.currentView = view;
-        return view;
-    },
-
-    before: function(callback) {
-        if (this.wineList) {
-            if (callback) callback();
-        } else {
-            this.wineList = new WineCollection();
-       		this.wineList.fetch({success: function() {
-               $('#sidebar').html( new WineListView({model: app.wineList}).render().el );
-               if (callback) callback();
-            }});
-        }
-    }
+		wineView.setModel(new Wine());
+	}
 
 });
 
