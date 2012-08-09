@@ -1,6 +1,6 @@
 
 Backbone.View.prototype.setModel = function(m) {
-	if (this.model) {
+	if (this.model && this.model !== Hidden) {
 		this.model.unbind("change", this.render, this);
 	}
 	this.model = m;
@@ -8,8 +8,14 @@ Backbone.View.prototype.setModel = function(m) {
 	this.render();
 };
 
+Hidden = "hidden";
+
 Backbone.View.prototype.render = function(eventName) {
-	$(this.el).html($(this.template).render(this.model ? this.model.toJSON() : {}, this.directives));
+	if (this.model === Hidden) {
+		// don't render
+	} else {
+		$(this.el).html($(this.template).render(this.model ? this.model.toJSON() : {}, this.directives));
+	}
 	return this;
 };
 
@@ -39,7 +45,7 @@ $(function() {
 	    	wineList.fetch({async: false});
 	    	
 	    	headerView = new HeaderView();
-	    	wineView = new WineView();
+	    	wineView = new WineView({model: Hidden});
 	    	wineListView = new WineListView({model: wineList});
 	    	
 	    	$('#sidebar').html(wineListView.render().el);
