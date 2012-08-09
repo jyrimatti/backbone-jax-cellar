@@ -9,9 +9,7 @@ Backbone.View.prototype.setModel = function(m) {
 };
 
 Backbone.View.prototype.render = function(eventName) {
-	if (this.model) {
-		$(this.el).html(this.template(this.model.toJSON()));
-	}
+	$(this.el).html($(this.template).render(this.model ? this.model.toJSON() : {}, this.directives));
 	return this;
 };
 

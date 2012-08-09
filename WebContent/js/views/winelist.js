@@ -22,9 +22,17 @@ $(function(){
 	window.WineListItemView = Backbone.View.extend({
 	
 	    tagName:"li",
+	    
+	    directives: {
+	    	name: {
+	    		href: function(params) {
+	    			return params.value + this.id;
+	    		}
+	    	}
+	    },
 	
 	    initialize:function () {
-	        this.template = _.template(tpl.get('wine-list-item'));
+	        this.template = tpl.get('wine-list-item');
 	        this.model.bind("change", this.render, this);
 	        this.model.bind("destroy", this.close, this);
 	    }
