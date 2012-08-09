@@ -29,42 +29,47 @@ var headerView;
 var wineView;
 var wineListView;
 
-var wineList = new WineCollection();
+var wineList;
 
-var AppRouter = Backbone.Router.extend({
+$(function() {
 	
-    initialize: function() {
-    	wineList.fetch({async: false});
-    	
-    	headerView = new HeaderView();
-    	wineView = new WineView();
-    	wineListView = new WineListView({model: wineList});
-    	
-    	$('#sidebar').html(wineListView.render().el);
-        $('#header').html(headerView.render().el);
-        $('#content').html(wineView.render().el);
-    },
-
-	routes: {
-		""			: "list",
-		"wines/new"	: "newWine",
-		"wines/:id"	: "wineDetails"
-	},
-
-	list: function() {
-  	},
-
-	wineDetails: function(id) {
-		wineView.setModel(wineList.get(id));
-  	},
-
-	newWine: function() {
-		wineView.setModel(new Wine());
-	}
-
-});
-
-tpl.loadTemplates(['header', 'wine-details', 'wine-list-item'], function() {
-    app = new AppRouter();
-    Backbone.history.start();
+	wineList = new WineCollection();
+	
+	var AppRouter = Backbone.Router.extend({
+		
+	    initialize: function() {
+	    	wineList.fetch({async: false});
+	    	
+	    	headerView = new HeaderView();
+	    	wineView = new WineView();
+	    	wineListView = new WineListView({model: wineList});
+	    	
+	    	$('#sidebar').html(wineListView.render().el);
+	        $('#header').html(headerView.render().el);
+	        $('#content').html(wineView.render().el);
+	    },
+	
+		routes: {
+			""			: "list",
+			"wines/new"	: "newWine",
+			"wines/:id"	: "wineDetails"
+		},
+	
+		list: function() {
+	  	},
+	
+		wineDetails: function(id) {
+			wineView.setModel(wineList.get(id));
+	  	},
+	
+		newWine: function() {
+			wineView.setModel(new Wine());
+		}
+	
+	});
+	
+	tpl.loadTemplates(['header', 'wine-details', 'wine-list-item'], function() {
+	    app = new AppRouter();
+	    Backbone.history.start();
+	});
 });
